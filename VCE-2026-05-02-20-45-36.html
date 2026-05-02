@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM & CNIC Lookup | Mr Ismail </title>
+    <style>
+        :root {
+            --primary: #1a2a6c;
+            --secondary: #b21f1f;
+            --accent: #fdbb2d;
+            --glass: rgba(255, 255, 255, 0.9);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            /* Background image and styling */
+            background-image: url('FB_IMG_1758802411604.jpg'); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Unique Glassmorphism Container */
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            margin-top: 40px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .group-name {
+            color: var(--accent);
+            font-weight: 800;
+        }
+
+        .content { padding: 40px; }
+
+        /* Modernized Input Section */
+        .input-section {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .search-type {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+        }
+
+        .search-option {
+            font-weight: 600;
+            color: var(--primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 18px 25px;
+            border: 2px solid #eee;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            transition: 0.3s;
+            background: #fdfdfd;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 15px rgba(178, 31, 31, 0.1);
+        }
+
+        button {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 0 35px;
+            border-radius: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.4s;
+            box-shadow: 0 5px 15px rgba(178, 31, 31, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(178, 31, 31, 0.4);
+        }
+
+        /* Result Cards Design */
+        .result-card {
+            margin-top: 30px;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .info-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            border-bottom: 4px solid var(--primary);
+            transition: 0.3s;
+        }
+
+        .info-card:hover { transform: scale(1.02); }
+
+        .credit {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            background: rgba(26, 42, 108, 0.05);
+            border-radius: 12px;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        @media (max-width: 768px) {
+            .input-group { flex-direction: column; }
+            header h1 { font-size: 1.8rem; }
+            .search-type { gap: 10px; flex-direction: column; align-items: center; }
+        }
+        
+        .loading { text-align: center; display: none; margin: 20px 0; }
+        .loading.active { display: block; }
+        .spinner {
+            width: 40px; height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .result-section { display: none; }
+        .result-section.active { display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Database Lookup</h1>
+            <p class="subtitle">Developed by <strong>Mr Ismail Hacker🖤</strong> | <span class="group-name"MR ISMAIL HACKER
+03205953192</span></p>
+        </header>
+        
+        <div class="content">
+            <div class="input-section">
+                <div class="search-type">
+                    <label class="search-option">
+                        <input type="radio" name="searchType" value="sim" checked> SIM Number
+                    </label>
+                    <label class="search-option">
+                        <input type="radio" name="searchType" value="cnic"> CNIC Number
+                    </label>
+                </div>
+                
+                <div class="input-group">
+                    <input type="text" id="searchInput" placeholder="Enter number here..." maxlength="15">
+                    <button id="lookupBtn">SEARCH NOW</button>
+                </div>
+            </div>
+            
+            <div class="loading" id="loadingIndicator">
+                <div class="spinner"></div>
+                <p style="margin-top:10px; font-weight:600;">Searching Database...</p>
+            </div>
+            
+            <div class="result-section" id="resultSection"></div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2026 | <strong>Mr Hacker </strong> | Mr Ismail Hacker </p>
+    </footer>
+
+    <script>
+        // Pura JavaScript code yahan pe paste karein jo upar tha.
+        // Sirf exampleButtons wala part nikal dena hai.
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const lookupBtn = document.getElementById('lookupBtn');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const resultSection = document.getElementById('resultSection');
+            const searchTypeRadios = document.querySelectorAll('input[name="searchType"]');
+            const apiUrl = 'https://fam-official.serv00.net/api/famofc_simdatabase.php';
+
+            searchTypeRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    searchInput.placeholder = this.value === 'sim' ? 'e.g. 03338570120' : 'e.g. 3240214025071';
+                });
+            });
+
+            lookupBtn.addEventListener('click', lookupInfo);
+            searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') lookupInfo(); });
+
+            function lookupInfo() {
+                const searchValue = searchInput.value.trim();
+                if (!searchValue) { alert('Please enter a value'); return; }
+                
+                loadingIndicator.classList.add('active');
+                resultSection.classList.remove('active');
+                lookupBtn.disabled = true;
+
+                fetch(`${apiUrl}?number=${encodeURIComponent(searchValue)}`)
+                    .then(res => res.json())
+                    .then(data => displayResults(data, searchValue))
+                    .catch(() => alert('Error connecting to server'))
+                    .finally(() => {
+                        loadingIndicator.classList.remove('active');
+                        lookupBtn.disabled = false;
+                    });
+            }
+
+            function displayResults(data, val) {
+                resultSection.innerHTML = '';
+                if (data.success) {
+                    let html = `<div class="result-card">`;
+                    data.data.forEach(sim => {
+                        html += `
+                            <div class="info-card" style="margin-bottom:15px;">
+                                <p><strong>Name:</strong> ${sim.name || 'N/A'}</p>
+                                <p><strong>Number:</strong> ${sim.number || 'N/A'}</p>
+                                <p><strong>CNIC:</strong> ${sim.cnic || 'N/A'}</p>
+                                <p><strong>Address:</strong> ${sim.address || 'N/A'}</p>
+                            </div>`;
+                    });
+                    html += `<div class="credit">System Managed by: <strong>Mr Hacker</strong></div></div>`;
+                    resultSection.innerHTML = html;
+                } else {
+                    resultSection.innerHTML = `<p style="text-align:center; color:red; padding:20px;">No records found for ${val}</p>`;
+                }
+                resultSection.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>
